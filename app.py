@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
   app = wx.PySimpleApp(0)
   wx.InitAllImageHandlers()
-  frame_1 = AdvFrame(None, wx.ID_ANY, "")
+  frame_1 = AdvFrame()
   app.SetTopWindow(frame_1)
   frame_1.Show()
   app.MainLoop()

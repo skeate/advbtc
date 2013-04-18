@@ -1,7 +1,7 @@
 import wx
 import wx.lib.mixins.listctrl as listmix
 
-class CustomListControl(
+class AddressListControl(
     wx.ListCtrl,
     listmix.ListCtrlAutoWidthMixin,
     listmix.ColumnSorterMixin):

@@ -1,14 +1,15 @@
-from MyFrame import MyFrame
+import sys
+from gui import MainWindow, AboutWindow
 import wx
 import wx.lib.mixins.listctrl as listmix
 import glbls
 
-class AdvFrame(MyFrame):
-  def __init__(self, *args, **kwds):
-    MyFrame.__init__(self, *args, **kwds)
-    self.addrlist.InsertColumn(0, 'Address')
-    self.addrlist.InsertColumn(1, 'Balance', width=100)
-    self.addrlist.InsertColumn(2, 'Label', width=100)
+class AdvFrame(MainWindow):
+  def __init__(self):
+    MainWindow.__init__(self, None)
+    self.addrList.InsertColumn(0, 'Address')
+    self.addrList.InsertColumn(1, 'Balance', width=100)
+    self.addrList.InsertColumn(2, 'Label', width=100)
     glbls.workQueue.put(('getbalance', self.updateBalance))
     glbls.workQueue.put(('getucbalance', self.updateUCBalance))
 
@@ -26,10 +27,10 @@ class AdvFrame(MyFrame):
 
   def listAddresses(self, data):
     zeroCount = 0
-    self.addrlist.DeleteAllItems()
+    self.addrList.DeleteAllItems()
     dictForm = dict(zip(range(len(data)), data))
 
-    self.addrlist.setData(dictForm)
+    self.addrList.setData(dictForm)
     index = 0
     for key, data in dictForm.items():
       if data[1] == 0 and not self.showZero.IsChecked():
@@ -39,11 +40,18 @@ class AdvFrame(MyFrame):
       # so set label field to empty string
       if len(data) == 2:
         data.append("")
-      self.addrlist.InsertStringItem(index, data[0])
-      self.addrlist.SetStringItem(index, 1, '%.8f' % data[1])
-      self.addrlist.SetStringItem(index, 2, data[2])
-      self.addrlist.SetItemData(index, key)
-    self.addrlist.SortListItems(1, 0)
+      self.addrList.InsertStringItem(index, data[0])
+      self.addrList.SetStringItem(index, 1, '%.8f' % data[1])
+      self.addrList.SetStringItem(index, 2, data[2])
+      self.addrList.SetItemData(index, key)
+    self.addrList.SortListItems(1, 0)
     self.numAddrs.SetLabel('%d / %d' % (zeroCount, len(dictForm)))
     self.showAddr.SetLabel('Show Addresses')
     self.showAddr.Enable(True)
+
+  def menu_exit(self, event):
+    sys.exit()
+
+  def menu_about(self, event):
+    about = AboutWindow(wx.GetApp().TopWindow)
+    about.Show()
