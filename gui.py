@@ -21,7 +21,7 @@ _ = gettext.gettext
 class MainWindow ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"advbtc"), pos = wx.DefaultPosition, size = wx.Size( 850,450 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"advbtc"), pos = wx.DefaultPosition, size = wx.Size( 850,460 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
@@ -65,7 +65,7 @@ class MainWindow ( wx.Frame ):
 		
 		self.SetMenuBar( self.m_menubar1 )
 		
-		self.m_statusBar1 = self.CreateStatusBar( 1, wx.ST_SIZEGRIP, wx.ID_ANY )
+		self.sb = self.CreateStatusBar( 1, wx.ST_SIZEGRIP, wx.ID_ANY )
 		bSizer2 = wx.BoxSizer( wx.VERTICAL )
 		
 		self.m_notebook1 = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -129,11 +129,11 @@ class MainWindow ( wx.Frame ):
 		
 		self.addrPanel = wx.Panel( self.m_notebook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		addrSizer = wx.GridBagSizer( 0, 0 )
-		addrSizer.SetFlexibleDirection( wx.HORIZONTAL )
+		addrSizer.SetFlexibleDirection( wx.BOTH )
 		addrSizer.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 		
-		self.addrList = AddressListControl(self.addrPanel, wx.ID_ANY, style=wx.LC_REPORT | wx.SUNKEN_BORDER)
-		addrSizer.Add( self.addrList, wx.GBPosition( 0, 0 ), wx.GBSpan( 6, 1 ), wx.ALL|wx.EXPAND, 5 )
+		self.addrList = AddressListControl(self.addrPanel, wx.ID_ANY, style=wx.LC_SINGLE_SEL | wx.LC_REPORT | wx.SUNKEN_BORDER)
+		addrSizer.Add( self.addrList, wx.GBPosition( 0, 0 ), wx.GBSpan( 8, 1 ), wx.ALL|wx.EXPAND, 5 )
 		
 		
 		addrSizer.AddSpacer( ( 10, 10 ), wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.EXPAND, 5 )
@@ -141,30 +141,41 @@ class MainWindow ( wx.Frame ):
 		self.showAddr = wx.Button( self.addrPanel, wx.ID_ANY, _(u"Refresh Address List"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		addrSizer.Add( self.showAddr, wx.GBPosition( 1, 2 ), wx.GBSpan( 1, 2 ), wx.ALL|wx.EXPAND, 5 )
 		
-		self.m_staticText11 = wx.StaticText( self.addrPanel, wx.ID_ANY, _(u"Show Empty Addresses:"), wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText11.Wrap( -1 )
-		addrSizer.Add( self.m_staticText11, wx.GBPosition( 2, 2 ), wx.GBSpan( 1, 1 ), wx.ALIGN_RIGHT|wx.ALL, 5 )
+		self.newAddr = wx.Button( self.addrPanel, wx.ID_ANY, _(u"Create New Address"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		addrSizer.Add( self.newAddr, wx.GBPosition( 2, 2 ), wx.GBSpan( 1, 2 ), wx.ALL|wx.EXPAND, 5 )
 		
-		self.showZero = wx.CheckBox( self.addrPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		addrSizer.Add( self.showZero, wx.GBPosition( 2, 3 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		self.m_staticText15 = wx.StaticText( self.addrPanel, wx.ID_ANY, _(u"Show Empty Labeled:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText15.Wrap( -1 )
+		addrSizer.Add( self.m_staticText15, wx.GBPosition( 3, 2 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT|wx.ALL, 5 )
+		
+		self.showLabeled = wx.CheckBox( self.addrPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.showLabeled.SetValue(True) 
+		addrSizer.Add( self.showLabeled, wx.GBPosition( 3, 3 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		
+		self.m_staticText11 = wx.StaticText( self.addrPanel, wx.ID_ANY, _(u"Show All:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText11.Wrap( -1 )
+		addrSizer.Add( self.m_staticText11, wx.GBPosition( 4, 2 ), wx.GBSpan( 1, 1 ), wx.ALIGN_RIGHT|wx.ALL, 5 )
+		
+		self.showAll = wx.CheckBox( self.addrPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		addrSizer.Add( self.showAll, wx.GBPosition( 4, 3 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
 		self.m_staticText12 = wx.StaticText( self.addrPanel, wx.ID_ANY, _(u"Number of Addresses:"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText12.Wrap( -1 )
-		addrSizer.Add( self.m_staticText12, wx.GBPosition( 3, 2 ), wx.GBSpan( 1, 1 ), wx.ALIGN_RIGHT|wx.ALL, 5 )
+		addrSizer.Add( self.m_staticText12, wx.GBPosition( 5, 2 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT|wx.ALL, 5 )
 		
 		self.numAddrs = wx.StaticText( self.addrPanel, wx.ID_ANY, _(u"?"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.numAddrs.Wrap( -1 )
-		addrSizer.Add( self.numAddrs, wx.GBPosition( 3, 3 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		addrSizer.Add( self.numAddrs, wx.GBPosition( 5, 3 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		
-		self.m_button3 = wx.Button( self.addrPanel, wx.ID_ANY, _(u"New Transaction from\nSelected Address"), wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_button3.Enable( False )
+		self.newTxBtn = wx.Button( self.addrPanel, wx.ID_ANY, _(u"New Transaction from\nSelected Address"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.newTxBtn.Enable( False )
 		
-		addrSizer.Add( self.m_button3, wx.GBPosition( 4, 2 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		addrSizer.Add( self.newTxBtn, wx.GBPosition( 6, 2 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
-		self.m_button4 = wx.Button( self.addrPanel, wx.ID_ANY, _(u"Copy Selected\nAddress"), wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_button4.Enable( False )
+		self.copyAddrBtn = wx.Button( self.addrPanel, wx.ID_ANY, _(u"Copy Address\nto Clipboard"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.copyAddrBtn.Enable( False )
 		
-		addrSizer.Add( self.m_button4, wx.GBPosition( 4, 3 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		addrSizer.Add( self.copyAddrBtn, wx.GBPosition( 6, 3 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
 		
 		addrSizer.AddSpacer( ( 10, 10 ), wx.GBPosition( 0, 4 ), wx.GBSpan( 1, 1 ), wx.EXPAND, 5 )
@@ -172,6 +183,7 @@ class MainWindow ( wx.Frame ):
 		
 		addrSizer.AddGrowableCol( 0 )
 		addrSizer.AddGrowableRow( 1 )
+		addrSizer.AddGrowableRow( 2 )
 		
 		self.addrPanel.SetSizer( addrSizer )
 		self.addrPanel.Layout()
@@ -186,53 +198,61 @@ class MainWindow ( wx.Frame ):
 		self.ctxPanel = wx.Panel( self.m_notebook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer6 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.m_listbook1 = wx.Listbook( self.ctxPanel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LB_DEFAULT )
+		self.m_listbook1 = wx.Listbook( self.ctxPanel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LB_LEFT )
 		m_listbook1ImageSize = wx.Size( 16,16 )
 		m_listbook1Index = 0
 		m_listbook1Images = wx.ImageList( m_listbook1ImageSize.GetWidth(), m_listbook1ImageSize.GetHeight() )
 		self.m_listbook1.AssignImageList( m_listbook1Images )
-		self.m_panel7 = wx.Panel( self.m_listbook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.m_listbook1.AddPage( self.m_panel7, _(u"Simple"), True )
+		self.txSimplePanel = wx.Panel( self.m_listbook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_listbook1.AddPage( self.txSimplePanel, _(u"Simple"), True )
 		m_listbook1Bitmap = wx.Bitmap( u"icons/arrow.png", wx.BITMAP_TYPE_ANY )
 		if ( m_listbook1Bitmap.Ok() ):
 			m_listbook1Images.Add( m_listbook1Bitmap )
 			self.m_listbook1.SetPageImage( m_listbook1Index, m_listbook1Index )
 			m_listbook1Index += 1
 		
-		self.m_panel8 = wx.Panel( self.m_listbook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.m_listbook1.AddPage( self.m_panel8, _(u"Deposit"), False )
+		self.txDepositPanel = wx.Panel( self.m_listbook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_listbook1.AddPage( self.txDepositPanel, _(u"Deposit"), False )
 		m_listbook1Bitmap = wx.Bitmap( u"icons/arrow-retweet.png", wx.BITMAP_TYPE_ANY )
 		if ( m_listbook1Bitmap.Ok() ):
 			m_listbook1Images.Add( m_listbook1Bitmap )
 			self.m_listbook1.SetPageImage( m_listbook1Index, m_listbook1Index )
 			m_listbook1Index += 1
 		
-		self.m_panel9 = wx.Panel( self.m_listbook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.m_listbook1.AddPage( self.m_panel9, _(u"Escrow"), False )
+		self.txEscrowPanel = wx.Panel( self.m_listbook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_listbook1.AddPage( self.txEscrowPanel, _(u"Escrow"), False )
 		m_listbook1Bitmap = wx.Bitmap( u"icons/arrow-skip.png", wx.BITMAP_TYPE_ANY )
 		if ( m_listbook1Bitmap.Ok() ):
 			m_listbook1Images.Add( m_listbook1Bitmap )
 			self.m_listbook1.SetPageImage( m_listbook1Index, m_listbook1Index )
 			m_listbook1Index += 1
 		
-		self.m_panel10 = wx.Panel( self.m_listbook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.m_listbook1.AddPage( self.m_panel10, _(u"Assurance"), False )
+		self.txAssurancePanel = wx.Panel( self.m_listbook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_listbook1.AddPage( self.txAssurancePanel, _(u"Assurance"), False )
 		m_listbook1Bitmap = wx.Bitmap( u"icons/arrow-join.png", wx.BITMAP_TYPE_ANY )
 		if ( m_listbook1Bitmap.Ok() ):
 			m_listbook1Images.Add( m_listbook1Bitmap )
 			self.m_listbook1.SetPageImage( m_listbook1Index, m_listbook1Index )
 			m_listbook1Index += 1
 		
-		self.m_panel11 = wx.Panel( self.m_listbook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.m_listbook1.AddPage( self.m_panel11, _(u"Micro"), False )
+		self.txMicroPanel = wx.Panel( self.m_listbook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_listbook1.AddPage( self.txMicroPanel, _(u"Micro"), False )
 		m_listbook1Bitmap = wx.Bitmap( u"icons/arrow-000-small.png", wx.BITMAP_TYPE_ANY )
 		if ( m_listbook1Bitmap.Ok() ):
 			m_listbook1Images.Add( m_listbook1Bitmap )
 			self.m_listbook1.SetPageImage( m_listbook1Index, m_listbook1Index )
 			m_listbook1Index += 1
 		
+		self.txCustomPanel = wx.Panel( self.m_listbook1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_listbook1.AddPage( self.txCustomPanel, _(u"Custom"), False )
+		m_listbook1Bitmap = wx.Bitmap( u"icons/arrow-transition.png", wx.BITMAP_TYPE_ANY )
+		if ( m_listbook1Bitmap.Ok() ):
+			m_listbook1Images.Add( m_listbook1Bitmap )
+			self.m_listbook1.SetPageImage( m_listbook1Index, m_listbook1Index )
+			m_listbook1Index += 1
 		
-		bSizer6.Add( self.m_listbook1, 1, wx.EXPAND |wx.ALL, 5 )
+		
+		bSizer6.Add( self.m_listbook1, 1, wx.ALL|wx.EXPAND, 5 )
 		
 		
 		self.ctxPanel.SetSizer( bSizer6 )
@@ -286,7 +306,10 @@ class MainWindow ( wx.Frame ):
 		self.Bind( wx.EVT_MENU, self.menu_changePassphrase, id = self.m_menuItem5.GetId() )
 		self.Bind( wx.EVT_MENU, self.menu_settings, id = self.m_menuItem6.GetId() )
 		self.Bind( wx.EVT_MENU, self.menu_about, id = self.m_menuItem7.GetId() )
-		self.showAddr.Bind( wx.EVT_BUTTON, self.loadAddresses )
+		self.showAddr.Bind( wx.EVT_BUTTON, self.listAddresses )
+		self.newAddr.Bind( wx.EVT_BUTTON, self.createAddress )
+		self.newTxBtn.Bind( wx.EVT_BUTTON, self.newTxWithAddress )
+		self.copyAddrBtn.Bind( wx.EVT_BUTTON, self.copyAddress )
 	
 	def __del__( self ):
 		pass
@@ -311,7 +334,16 @@ class MainWindow ( wx.Frame ):
 	def menu_about( self, event ):
 		pass
 	
-	def loadAddresses( self, event ):
+	def listAddresses( self, event ):
+		pass
+	
+	def createAddress( self, event ):
+		pass
+	
+	def newTxWithAddress( self, event ):
+		pass
+	
+	def copyAddress( self, event ):
 		pass
 	
 
@@ -346,6 +378,130 @@ class AboutWindow ( wx.Dialog ):
 		
 		self.SetSizer( bSizer3 )
 		self.Layout()
+		
+		self.Centre( wx.BOTH )
+	
+	def __del__( self ):
+		pass
+	
+
+###########################################################################
+## Class SettingsWindow
+###########################################################################
+
+class SettingsWindow ( wx.Dialog ):
+	
+	def __init__( self, parent ):
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Settings"), pos = wx.DefaultPosition, size = wx.Size( -1,-1 ), style = wx.DEFAULT_DIALOG_STYLE )
+		
+		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		
+		bSizer8 = wx.BoxSizer( wx.VERTICAL )
+		
+		fgSizer1 = wx.FlexGridSizer( 0, 2, 0, 0 )
+		fgSizer1.AddGrowableCol( 1 )
+		fgSizer1.SetFlexibleDirection( wx.BOTH )
+		fgSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.m_staticText11 = wx.StaticText( self, wx.ID_ANY, _(u"bitcoin.conf location:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText11.Wrap( -1 )
+		fgSizer1.Add( self.m_staticText11, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT|wx.ALL, 5 )
+		
+		self.bccloc = wx.FilePickerCtrl( self, wx.ID_ANY, wx.EmptyString, _(u"Select a file"), u"bitcoin.conf", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		fgSizer1.Add( self.bccloc, 0, wx.ALL|wx.EXPAND, 5 )
+		
+		self.m_staticText12 = wx.StaticText( self, wx.ID_ANY, _(u"bitcoind Address:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText12.Wrap( -1 )
+		fgSizer1.Add( self.m_staticText12, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT|wx.ALL, 5 )
+		
+		self.bcdaddr = wx.TextCtrl( self, wx.ID_ANY, _(u"localhost:8332"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer1.Add( self.bcdaddr, 0, wx.ALL|wx.EXPAND, 5 )
+		
+		self.m_staticText13 = wx.StaticText( self, wx.ID_ANY, _(u"Secure (SSL) Connection:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText13.Wrap( -1 )
+		fgSizer1.Add( self.m_staticText13, 0, wx.ALIGN_RIGHT|wx.ALL, 5 )
+		
+		self.useSSL = wx.CheckBox( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer1.Add( self.useSSL, 0, wx.ALL, 5 )
+		
+		
+		bSizer8.Add( fgSizer1, 3, wx.EXPAND, 5 )
+		
+		bSizer9 = wx.BoxSizer( wx.HORIZONTAL )
+		
+		self.m_button7 = wx.Button( self, wx.ID_ANY, _(u"OK"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer9.Add( self.m_button7, 1, wx.ALIGN_BOTTOM|wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
+		
+		self.m_button8 = wx.Button( self, wx.ID_ANY, _(u"Cancel"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer9.Add( self.m_button8, 1, wx.ALIGN_BOTTOM|wx.ALL, 5 )
+		
+		
+		bSizer8.Add( bSizer9, 1, wx.EXPAND, 5 )
+		
+		
+		self.SetSizer( bSizer8 )
+		self.Layout()
+		bSizer8.Fit( self )
+		
+		self.Centre( wx.BOTH )
+		
+		# Connect Events
+		self.Bind( wx.EVT_INIT_DIALOG, self.open )
+		self.m_button7.Bind( wx.EVT_BUTTON, self.saveSettings )
+		self.m_button8.Bind( wx.EVT_BUTTON, self.close )
+	
+	def __del__( self ):
+		pass
+	
+	
+	# Virtual event handlers, overide them in your derived class
+	def open( self, event ):
+		pass
+	
+	def saveSettings( self, event ):
+		pass
+	
+	def close( self, event ):
+		pass
+	
+
+###########################################################################
+## Class PasswordWindow
+###########################################################################
+
+class PasswordWindow ( wx.Dialog ):
+	
+	def __init__( self, parent ):
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Enter Password"), pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.CAPTION|wx.STAY_ON_TOP )
+		
+		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		
+		bSizer10 = wx.BoxSizer( wx.VERTICAL )
+		
+		self.m_staticText14 = wx.StaticText( self, wx.ID_ANY, _(u"Enter password to unlock wallet:"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText14.Wrap( -1 )
+		bSizer10.Add( self.m_staticText14, 0, wx.ALL, 5 )
+		
+		self.m_textCtrl2 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PASSWORD )
+		self.m_textCtrl2.SetMinSize( wx.Size( 300,-1 ) )
+		
+		bSizer10.Add( self.m_textCtrl2, 0, wx.ALL|wx.EXPAND, 5 )
+		
+		bSizer11 = wx.BoxSizer( wx.HORIZONTAL )
+		
+		self.m_button9 = wx.Button( self, wx.ID_ANY, _(u"OK"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer11.Add( self.m_button9, 1, wx.ALL, 5 )
+		
+		self.m_button10 = wx.Button( self, wx.ID_ANY, _(u"Cancel"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer11.Add( self.m_button10, 1, wx.ALL, 5 )
+		
+		
+		bSizer10.Add( bSizer11, 1, wx.EXPAND, 5 )
+		
+		
+		self.SetSizer( bSizer10 )
+		self.Layout()
+		bSizer10.Fit( self )
 		
 		self.Centre( wx.BOTH )
 	

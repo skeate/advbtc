@@ -10,50 +10,21 @@
 
 import wx
 import gettext
-import re
-import os
-from sys import platform as _platform
-from AdvFrame import AdvFrame
+from guiEx import MainWindowEx
 from BitcoinThread import BitcoinThread
-import glbls
+from Queue import Queue
 
-def getRPCInfo():
-  if _platform.startswith('linux'):
-    bcc = open(os.environ['HOME'] + '/.bitcoin/bitcoin.conf', 'r')
-  elif _platform == 'darwin':
-    bcc = open(os.environ['HOME'] +
-        '/Library/Application Support/Bitcoin/bitcoin.conf', 'r')
-  elif _platform == 'win32':
-    bcc = open(os.environ['APPDATA'] + r'\Bitcoin\bitcoin.conf', 'r')
-  username = ""
-  password = ""
-  for line in bcc:
-    m = re.search(r'rpc(user|password)\s*=\s*([^# \n]+)', line)
-    if m:
-      if m.group(1) == 'user':
-        username = m.group(2)
-      else:
-        password = m.group(2)
-  if username == '' or password == '':
-    return False
-  return (username, password)
-
+workQueue = Queue()
 
 if __name__ == "__main__":
-  gettext.install("advbtc") # replace with the appropriate catalog name
+  gettext.install("advbtc")
 
-  rpcinfo = getRPCInfo()
-  if not rpcinfo:
-    print "Could not load RPC info from bitcoin.conf"
-    exit(1)
-
-  btc = BitcoinThread(rpcinfo, glbls.workQueue)
+  btc = BitcoinThread(workQueue)
   btc.setDaemon(True)
   btc.start()
 
-  app = wx.PySimpleApp(0)
-  wx.InitAllImageHandlers()
-  frame_1 = AdvFrame()
+  app = wx.App()
+  frame_1 = MainWindowEx(workQueue)
   app.SetTopWindow(frame_1)
   frame_1.Show()
   app.MainLoop()
