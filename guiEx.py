@@ -120,8 +120,14 @@ class MainWindowEx(MainWindow):
 
     # simple tx events
     def txSimpleSend(self, event):
-        self.workQueue.put(('send to address', self.txSimpleSendCB, self.txSimpleRecipient.Value, self.txSimpleAmount.Value))
-        self.txSimpleClear(self, None)
+        self.workQueue.put(
+            (
+                'send to address',
+                self.txSimpleSendCB,
+                self.txSimpleRecipient.Value,
+                self.txSimpleAmount.Value
+            ))
+        self.txSimpleClear(None)
     def txSimpleSendCB(self, data):
         print "hello"
 

@@ -7,6 +7,7 @@
 ## PLEASE DO "NOT" EDIT THIS FILE!
 ###########################################################################
 
+from AddressListControl import AddressListControl
 import wx
 import wx.xrc
 
@@ -119,7 +120,7 @@ class MainWindow ( wx.Frame ):
 		self.overview.SetSizer( overSizer )
 		self.overview.Layout()
 		overSizer.Fit( self.overview )
-		self.m_notebook1.AddPage( self.overview, _(u"Overview"), False )
+		self.m_notebook1.AddPage( self.overview, _(u"Overview"), True )
 		m_notebook1Bitmap = wx.Bitmap( u"icons/block.png", wx.BITMAP_TYPE_ANY )
 		if ( m_notebook1Bitmap.Ok() ):
 			m_notebook1Images.Add( m_notebook1Bitmap )
@@ -240,7 +241,7 @@ class MainWindow ( wx.Frame ):
 		self.ctx_simple.SetSizer( gbSizer3 )
 		self.ctx_simple.Layout()
 		gbSizer3.Fit( self.ctx_simple )
-		self.m_listbook1.AddPage( self.ctx_simple, _(u"Simple"), True )
+		self.m_listbook1.AddPage( self.ctx_simple, _(u"Simple"), False )
 		m_listbook1Bitmap = wx.Bitmap( u"icons/arrow.png", wx.BITMAP_TYPE_ANY )
 		if ( m_listbook1Bitmap.Ok() ):
 			m_listbook1Images.Add( m_listbook1Bitmap )
@@ -296,26 +297,26 @@ class MainWindow ( wx.Frame ):
 		self.m_staticText18.Wrap( -1 )
 		self.m_staticText18.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 92, False, wx.EmptyString ) )
 		
-		gbSizer4.Add( self.m_staticText18, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL, 5 )
+		gbSizer4.Add( self.m_staticText18, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 4 ), wx.ALIGN_CENTER|wx.ALL, 5 )
 		
 		self.m_staticText19 = wx.StaticText( self.ctx_custom, wx.ID_ANY, _(u"Outputs"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText19.Wrap( -1 )
 		self.m_staticText19.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 92, False, wx.EmptyString ) )
 		
-		gbSizer4.Add( self.m_staticText19, wx.GBPosition( 0, 2 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL, 5 )
+		gbSizer4.Add( self.m_staticText19, wx.GBPosition( 0, 5 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL, 5 )
 		
-		self.ctx_custom_inputs = InputList( self.ctx_custom, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LC_ICON )
-		gbSizer4.Add( self.ctx_custom_inputs, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 2 ), wx.ALL|wx.EXPAND, 5 )
+		self.ctx_custom_inputs = wx.ListCtrl( self.ctx_custom, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LC_ICON )
+		gbSizer4.Add( self.ctx_custom_inputs, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 4 ), wx.ALL|wx.EXPAND, 5 )
 		
-		self.ctx_custom_outputs = OutputList( self.ctx_custom, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LC_ICON )
-		gbSizer4.Add( self.ctx_custom_outputs, wx.GBPosition( 1, 2 ), wx.GBSpan( 1, 2 ), wx.ALL|wx.EXPAND, 5 )
+		self.ctx_custom_outputs = wx.ListCtrl( self.ctx_custom, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LC_ICON )
+		gbSizer4.Add( self.ctx_custom_outputs, wx.GBPosition( 1, 5 ), wx.GBSpan( 1, 2 ), wx.ALL|wx.EXPAND, 5 )
 		
 		self.m_staticText20 = wx.StaticText( self.ctx_custom, wx.ID_ANY, _(u"Tx Hash"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText20.Wrap( -1 )
 		gbSizer4.Add( self.m_staticText20, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_RIGHT|wx.ALL, 5 )
 		
 		self.ctx_custom_input_hash = wx.TextCtrl( self.ctx_custom, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		gbSizer4.Add( self.ctx_custom_input_hash, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		gbSizer4.Add( self.ctx_custom_input_hash, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 3 ), wx.ALL|wx.EXPAND, 5 )
 		
 		self.m_staticText22 = wx.StaticText( self.ctx_custom, wx.ID_ANY, _(u"Index"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText22.Wrap( -1 )
@@ -324,49 +325,69 @@ class MainWindow ( wx.Frame ):
 		self.ctx_custom_input_index = wx.TextCtrl( self.ctx_custom, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer4.Add( self.ctx_custom_input_index, wx.GBPosition( 3, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 		
+		self.m_staticText27 = wx.StaticText( self.ctx_custom, wx.ID_ANY, _(u"Seq"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText27.Wrap( -1 )
+		gbSizer4.Add( self.m_staticText27, wx.GBPosition( 3, 2 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		self.m_textCtrl12 = wx.TextCtrl( self.ctx_custom, wx.ID_ANY, _(u"0xFFFFFFFF"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer4.Add( self.m_textCtrl12, wx.GBPosition( 3, 3 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		
 		self.ctx_custom_input_script = wx.TextCtrl( self.ctx_custom, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE )
-		gbSizer4.Add( self.ctx_custom_input_script, wx.GBPosition( 5, 0 ), wx.GBSpan( 1, 2 ), wx.ALL|wx.EXPAND, 5 )
+		gbSizer4.Add( self.ctx_custom_input_script, wx.GBPosition( 5, 0 ), wx.GBSpan( 1, 4 ), wx.BOTTOM|wx.EXPAND, 5 )
 		
 		self.ctx_custom_output_script = wx.TextCtrl( self.ctx_custom, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE )
-		gbSizer4.Add( self.ctx_custom_output_script, wx.GBPosition( 5, 2 ), wx.GBSpan( 1, 2 ), wx.ALL|wx.EXPAND, 5 )
+		gbSizer4.Add( self.ctx_custom_output_script, wx.GBPosition( 4, 5 ), wx.GBSpan( 2, 2 ), wx.BOTTOM|wx.EXPAND, 5 )
 		
 		self.m_staticText24 = wx.StaticText( self.ctx_custom, wx.ID_ANY, _(u"scriptSig"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText24.Wrap( -1 )
-		gbSizer4.Add( self.m_staticText24, wx.GBPosition( 4, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 0 )
+		gbSizer4.Add( self.m_staticText24, wx.GBPosition( 4, 0 ), wx.GBSpan( 1, 4 ), wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 0 )
 		
 		self.m_staticText25 = wx.StaticText( self.ctx_custom, wx.ID_ANY, _(u"scriptPubKey"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText25.Wrap( -1 )
-		gbSizer4.Add( self.m_staticText25, wx.GBPosition( 4, 2 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 0 )
+		gbSizer4.Add( self.m_staticText25, wx.GBPosition( 3, 5 ), wx.GBSpan( 1, 2 ), wx.ALIGN_BOTTOM|wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 0 )
 		
 		self.m_staticText23 = wx.StaticText( self.ctx_custom, wx.ID_ANY, _(u"Amount (BTC)"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText23.Wrap( -1 )
-		gbSizer4.Add( self.m_staticText23, wx.GBPosition( 2, 2 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT|wx.ALL, 5 )
+		gbSizer4.Add( self.m_staticText23, wx.GBPosition( 2, 5 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT|wx.ALL, 5 )
 		
 		self.ctx_custom_output_amount = wx.TextCtrl( self.ctx_custom, wx.ID_ANY, _(u"0"), wx.DefaultPosition, wx.DefaultSize, 0 )
-		gbSizer4.Add( self.ctx_custom_output_amount, wx.GBPosition( 2, 3 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
+		gbSizer4.Add( self.ctx_custom_output_amount, wx.GBPosition( 2, 6 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
 		
 		self.ctx_custom_create = wx.Button( self.ctx_custom, wx.ID_ANY, _(u"Create"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.ctx_custom_create.SetDefault() 
 		self.ctx_custom_create.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 92, False, wx.EmptyString ) )
 		
-		gbSizer4.Add( self.ctx_custom_create, wx.GBPosition( 6, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_RIGHT|wx.ALL, 5 )
+		gbSizer4.Add( self.ctx_custom_create, wx.GBPosition( 7, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_RIGHT|wx.ALL, 5 )
+		
+		self.m_button13 = wx.Button( self.ctx_custom, wx.ID_ANY, _(u"Reference"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer4.Add( self.m_button13, wx.GBPosition( 7, 5 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
 		self.ctx_custom_reset = wx.Button( self.ctx_custom, wx.ID_ANY, _(u"Reset"), wx.DefaultPosition, wx.DefaultSize, 0 )
-		gbSizer4.Add( self.ctx_custom_reset, wx.GBPosition( 6, 2 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		gbSizer4.Add( self.ctx_custom_reset, wx.GBPosition( 7, 3 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
 		self.ctx_custom_generated = wx.TextCtrl( self.ctx_custom, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE|wx.TE_READONLY )
-		gbSizer4.Add( self.ctx_custom_generated, wx.GBPosition( 7, 0 ), wx.GBSpan( 1, 4 ), wx.ALL|wx.EXPAND, 5 )
+		gbSizer4.Add( self.ctx_custom_generated, wx.GBPosition( 8, 0 ), wx.GBSpan( 1, 7 ), wx.ALL|wx.EXPAND, 5 )
+		
+		self.m_staticText26 = wx.StaticText( self.ctx_custom, wx.ID_ANY, _(u"Lock Time"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText26.Wrap( -1 )
+		gbSizer4.Add( self.m_staticText26, wx.GBPosition( 6, 1 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT|wx.ALL, 0 )
+		
+		self.m_textCtrl11 = wx.TextCtrl( self.ctx_custom, wx.ID_ANY, _(u"0xFFFFFFFF"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer4.Add( self.m_textCtrl11, wx.GBPosition( 6, 3 ), wx.GBSpan( 1, 1 ), wx.ALL, 0 )
+		
+		self.m_staticline1 = wx.StaticLine( self.ctx_custom, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_VERTICAL )
+		gbSizer4.Add( self.m_staticline1, wx.GBPosition( 0, 4 ), wx.GBSpan( 6, 1 ), wx.EXPAND |wx.ALL, 5 )
 		
 		
 		gbSizer4.AddGrowableCol( 1 )
-		gbSizer4.AddGrowableCol( 3 )
+		gbSizer4.AddGrowableCol( 6 )
 		gbSizer4.AddGrowableRow( 5 )
-		gbSizer4.AddGrowableRow( 7 )
+		gbSizer4.AddGrowableRow( 8 )
 		
 		self.ctx_custom.SetSizer( gbSizer4 )
 		self.ctx_custom.Layout()
 		gbSizer4.Fit( self.ctx_custom )
-		self.m_listbook1.AddPage( self.ctx_custom, _(u"Custom"), False )
+		self.m_listbook1.AddPage( self.ctx_custom, _(u"Custom"), True )
 		m_listbook1Bitmap = wx.Bitmap( u"icons/arrow-transition.png", wx.BITMAP_TYPE_ANY )
 		if ( m_listbook1Bitmap.Ok() ):
 			m_listbook1Images.Add( m_listbook1Bitmap )
@@ -380,7 +401,7 @@ class MainWindow ( wx.Frame ):
 		self.ctx.SetSizer( bSizer6 )
 		self.ctx.Layout()
 		bSizer6.Fit( self.ctx )
-		self.m_notebook1.AddPage( self.ctx, _(u"Create Tx"), True )
+		self.m_notebook1.AddPage( self.ctx, _(u"Create Tx"), False )
 		m_notebook1Bitmap = wx.Bitmap( u"icons/mail-send.png", wx.BITMAP_TYPE_ANY )
 		if ( m_notebook1Bitmap.Ok() ):
 			m_notebook1Images.Add( m_notebook1Bitmap )
@@ -433,7 +454,7 @@ class MainWindow ( wx.Frame ):
 		self.Bind( wx.EVT_MENU, self.menu_backup, id = self.m_menuItem2.GetId() )
 		self.Bind( wx.EVT_MENU, self.menu_exit, id = self.m_menuItem3.GetId() )
 		self.Bind( wx.EVT_MENU, self.menu_encrypt, id = self.m_menuItem4.GetId() )
-		self.Bind( wx.EVT_MENU, self.menu_changePassphrase, id = self.m_menuItem5.GetId() )
+		self.Bind( wx.EVT_MENU, self.menu_change_passphrase, id = self.m_menuItem5.GetId() )
 		self.Bind( wx.EVT_MENU, self.menu_options, id = self.m_menuItem6.GetId() )
 		self.Bind( wx.EVT_MENU, self.menu_about, id = self.m_menuItem7.GetId() )
 		self.paddrs_refresh_btn.Bind( wx.EVT_BUTTON, self.paddrs_refresh )
@@ -459,7 +480,7 @@ class MainWindow ( wx.Frame ):
 	def menu_encrypt( self, event ):
 		pass
 	
-	def menu_changePassphrase( self, event ):
+	def menu_change_passphrase( self, event ):
 		pass
 	
 	def menu_options( self, event ):
@@ -648,6 +669,24 @@ class PasswordWindow ( wx.Dialog ):
 		self.SetSizer( bSizer10 )
 		self.Layout()
 		bSizer10.Fit( self )
+		
+		self.Centre( wx.BOTH )
+	
+	def __del__( self ):
+		pass
+	
+
+###########################################################################
+## Class TxReference
+###########################################################################
+
+class TxReference ( wx.Dialog ):
+	
+	def __init__( self, parent ):
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Custom Transaction Reference"), pos = wx.DefaultPosition, size = wx.DefaultSize, style = wx.DEFAULT_DIALOG_STYLE )
+		
+		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		
 		
 		self.Centre( wx.BOTH )
 	

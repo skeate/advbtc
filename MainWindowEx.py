@@ -3,72 +3,100 @@
 import wx
 import BaseGui
 
-# Implementing MainWindow
-class MainWindowEx( BaseGui.MainWindow ):
-	def __init__( self, parent ):
-		BaseGui.MainWindow.__init__( self, parent )
-        self.work_queue = queue
 
-        # set up address events
-        self.Bind(wx.EVT_LIST_ITEM_SELECTED,
-                  self.enableAddrButtons, self.addrList)
-        self.Bind(wx.EVT_LIST_ITEM_DESELECTED,
-                  self.disableAddrButtons, self.addrList)
+class MainWindowEx(BaseGui.MainWindow):
+    """ Implementing MainWindow """
+    def __init__(self, parent, queue):
+        BaseGui.MainWindow.__init__(self, parent)
+        self.work_queue = queue
 
         # set up timer to check connection
         # and update balance
         self.timer = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.update, self.timer)
+        self.Bind(wx.EVT_TIMER, self.timer_update, self.timer)
         self.timer.Start(0)
 
-	
-	# Handlers for MainWindow events.
-	def menu_backup( self, event ):
-		# TODO: Implement menu_backup
-		pass
-	
-	def menu_exit( self, event ):
-		# TODO: Implement menu_exit
-		pass
-	
-	def menu_encrypt( self, event ):
-		# TODO: Implement menu_encrypt
-		pass
-	
-	def menu_changePassphrase( self, event ):
-		# TODO: Implement menu_changePassphrase
-		pass
-	
-	def menu_settings( self, event ):
-		# TODO: Implement menu_settings
-		pass
-	
-	def menu_about( self, event ):
-		# TODO: Implement menu_about
-		pass
-	
-	def paddrs_refresh( self, event ):
-		# TODO: Implement paddrs_refresh
-		pass
-	
-	def paddrs_create( self, event ):
-		# TODO: Implement paddrs_create
-		pass
-	
-	def paddrs_newtx( self, event ):
-		# TODO: Implement paddrs_newtx
-		pass
-	
-	def paddrs_copy( self, event ):
-		# TODO: Implement paddrs_copy
-		pass
-	
-	def ctx_simple_send( self, event ):
-		# TODO: Implement ctx_simple_send
-		pass
-	
-	def ctx_simple_clear( self, event ):
-		# TODO: Implement ctx_simple_clear
-		pass
-	
-	
+    def timer_update(self, event):
+        """Update the balance periodically"""
+        self.work_queue.put(('beat', self.timer_update_cb))
+        self.timer.Start(1000)
+        event.Skip()
+
+    def timer_update_cb(self, data):
+        """Callback for update timer"""
+        if data is False:
+            self.status_bar.SetStatusText('Connection error.')
+            self.overview_cbalance.SetLabel('connection error')
+            self.overview_ucbalance.SetLabel('connection error')
+        else:
+            self.status_bar.SetStatusText(
+                'Connected to server (%d connections to network)'
+                % data['connections'])
+            self.overview_cbalance.SetLabel('%.8f' % data['balance'])
+            self.overview_ucbalance.SetLabel(
+                '%.8f' % (data['ubalance'] - data['balance']))
+
+    # Handlers for MainWindow events.
+    def menu_backup(self, event):
+        # TODO: Implement menu_backup
+        pass
+
+    def menu_exit(self, event):
+        # TODO: Implement menu_exit
+        pass
+
+    def menu_encrypt(self, event):
+        # TODO: Implement menu_encrypt
+        pass
+
+    def menu_change_passphrase(self, event):
+        # TODO: Implement menu_changePassphrase
+        pass
+
+    def menu_options(self, event):
+        # TODO: Implement menu_settings
+        pass
+
+    def menu_about(self, event):
+        # TODO: Implement menu_about
+        pass
+
+    def paddrs_refresh(self, event):
+        # TODO: Implement paddrs_refresh
+        pass
+
+    def paddrs_create(self, event):
+        # TODO: Implement paddrs_create
+        pass
+
+    def paddrs_newtx(self, event):
+        # TODO: Implement paddrs_newtx
+        pass
+
+    def paddrs_copy(self, event):
+        # TODO: Implement paddrs_copy
+        pass
+
+    def paddrs_enable_btns(self, event):
+        # TODO: implement
+        pass
+
+    def paddrs_disable_btns(self, event):
+        # TODO: Implement
+        pass
+
+    def ctx_simple_send(self, event):
+        self.work_queue.put((
+            'send to address',
+            self.ctx_simple_send_cb,
+            self.ctx_simple_recipient.Value,
+            self.ctx_simple_amount.Value
+            ))
+        self.ctx_simple_clear(None)
+
+    def ctx_simple_send_cb(self, data):
+        print data
+
+    def ctx_simple_clear(self, event):
+        # TODO: Implement ctx_simple_clear
+        pass

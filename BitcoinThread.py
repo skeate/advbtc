@@ -57,7 +57,7 @@ class BitcoinThread(Thread):
                 elif task[0] == 'create address':
                     ret = self.rpc.getnewaddress('default')
                 elif task[0] == 'send to address':
-                    ret = self.rpc.sendtoaddress(*task[1:])
+                    ret = self.rpc.sendtoaddress(*task[2:])
                 else:
                     print 'Unknown command.'
                     ret = False
