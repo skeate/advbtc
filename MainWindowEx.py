@@ -2,6 +2,7 @@
 
 import wx
 import BaseGui
+import pyperclip
 
 
 class MainWindowEx(BaseGui.MainWindow):
@@ -36,7 +37,7 @@ class MainWindowEx(BaseGui.MainWindow):
             self.overview_ucbalance.SetLabel(
                 '%.8f' % (data['ubalance'] - data['balance']))
 
-    # Handlers for MainWindow events.
+    # Menu
     def menu_backup(self, event):
         # TODO: Implement menu_backup
         pass
@@ -61,36 +62,67 @@ class MainWindowEx(BaseGui.MainWindow):
         # TODO: Implement menu_about
         pass
 
+    # Personal Addresses tab
     def paddrs_refresh(self, event):
-        # TODO: Implement paddrs_refresh
-        pass
+        self.work_queue.put(('get addresses', self.paddrs_refresh_cb))
+        self.paddrs_refresh_btn.SetLabel('loading...')
+        self.paddrs_refresh_btn.Enable(False)
+
+    def paddrs_refresh_cb(self, data):
+        """List refresh callback"""
+        zero_count = 0
+        self.paddrs_list.DeleteAllItems()
+        dict_form = dict(zip(range(len(data)), data))
+        self.paddrs_list.setData(dict_form)
+        index = 0
+        for key, data in dict_form.items():
+            if not self.paddrs_showall.IsChecked() and data[1] == 0:
+                if not self.paddrs_showlabeled.IsChecked() or data[2] == '':
+                    continue
+            zero_count += 1
+            # some addresses do not have labels,
+            # so set label field to empty string
+            if len(data) == 2:
+                data.append("")
+            self.paddrs_list.InsertStringItem(index, data[0])
+            self.paddrs_list.SetStringItem(index, 1, '%.8f' % data[1])
+            self.paddrs_list.SetStringItem(index, 2, data[2])
+            self.paddrs_list.SetItemData(index, key)
+        self.paddrs_list.SortListItems(1, 0)
+        self.paddrs_count.SetLabel('%d / %d' % (zero_count, len(dict_form)))
+        self.paddrs_refresh_btn.SetLabel('Refresh Address List')
+        self.paddrs_refresh_btn.Enable(True)
 
     def paddrs_create(self, event):
-        # TODO: Implement paddrs_create
-        pass
+        self.work_queue.put(('create address', self.paddrs_create_cb))
+
+    def paddrs_create_cb(self, data):
+        print data
 
     def paddrs_newtx(self, event):
         # TODO: Implement paddrs_newtx
         pass
 
     def paddrs_copy(self, event):
-        # TODO: Implement paddrs_copy
-        pass
+        row = self.paddrs_list.GetFirstSelected()
+        address = self.paddrs_list.GetItem(row, 0).GetText()
+        pyperclip.copy(address)
 
     def paddrs_enable_btns(self, event):
-        # TODO: implement
-        pass
+        self.paddrs_newtx_btn.Enable(True)
+        self.paddrs_copy_btn.Enable(True)
 
     def paddrs_disable_btns(self, event):
-        # TODO: Implement
-        pass
+        self.paddrs_newtx_btn.Enable(False)
+        self.paddrs_copy_btn.Enable(False)
 
+    # Create Tx tab - Simple
     def ctx_simple_send(self, event):
         self.work_queue.put((
             'send to address',
             self.ctx_simple_send_cb,
             self.ctx_simple_recipient.Value,
-            self.ctx_simple_amount.Value
+            float(self.ctx_simple_amount.Value)
             ))
         self.ctx_simple_clear(None)
 

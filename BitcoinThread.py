@@ -4,7 +4,7 @@ BitcoinThread.py
 Handles connection/communication to bitcoin API
 """
 
-from jsonrpc import ServiceProxy
+from jsonrpc import ServiceProxy, JSONRPCException
 from threading import Thread
 import shelve
 from sys import platform as _platform
@@ -61,10 +61,13 @@ class BitcoinThread(Thread):
                 else:
                     print 'Unknown command.'
                     ret = False
+            except JSONRPCException as ex:
+                print repr(ex.error)
             except Exception as ex:
                 if task[0] == 'beat':
                     ret = False
                 else:
+                    print "Exception: ",
                     print ex
             finally:
                 task[1](ret)

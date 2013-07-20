@@ -177,7 +177,7 @@ class MainWindow ( wx.Frame ):
 		
 		addrSizer.AddSpacer( ( 10, 10 ), wx.GBPosition( 0, 4 ), wx.GBSpan( 1, 1 ), wx.EXPAND, 5 )
 		
-		self.paddrs_list = AddressListControl( self.paddrs, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LC_ICON )
+		self.paddrs_list = AddressListControl( self.paddrs, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LC_REPORT|wx.LC_SINGLE_SEL )
 		addrSizer.Add( self.paddrs_list, wx.GBPosition( 0, 0 ), wx.GBSpan( 7, 1 ), wx.ALL|wx.EXPAND, 5 )
 		
 		
@@ -241,7 +241,7 @@ class MainWindow ( wx.Frame ):
 		self.ctx_simple.SetSizer( gbSizer3 )
 		self.ctx_simple.Layout()
 		gbSizer3.Fit( self.ctx_simple )
-		self.m_listbook1.AddPage( self.ctx_simple, _(u"Simple"), False )
+		self.m_listbook1.AddPage( self.ctx_simple, _(u"Simple"), True )
 		m_listbook1Bitmap = wx.Bitmap( u"icons/arrow.png", wx.BITMAP_TYPE_ANY )
 		if ( m_listbook1Bitmap.Ok() ):
 			m_listbook1Images.Add( m_listbook1Bitmap )
@@ -387,7 +387,7 @@ class MainWindow ( wx.Frame ):
 		self.ctx_custom.SetSizer( gbSizer4 )
 		self.ctx_custom.Layout()
 		gbSizer4.Fit( self.ctx_custom )
-		self.m_listbook1.AddPage( self.ctx_custom, _(u"Custom"), True )
+		self.m_listbook1.AddPage( self.ctx_custom, _(u"Custom"), False )
 		m_listbook1Bitmap = wx.Bitmap( u"icons/arrow-transition.png", wx.BITMAP_TYPE_ANY )
 		if ( m_listbook1Bitmap.Ok() ):
 			m_listbook1Images.Add( m_listbook1Bitmap )
