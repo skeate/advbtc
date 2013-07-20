@@ -1,3 +1,6 @@
 *.pyc
 *.bak
 whatever.py
+build/
+settings
+.idea/
